@@ -8,7 +8,6 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
 <meta name="apple-mobile-web-app-title" content="我的书架">
 <meta name="format-detection" content="telephone=no">
-<!-- 苹果主屏幕图标 -->
 <link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 180 180%22><rect width=%22180%22 height=%22180%22 rx=%2240%22 fill=%22%23407bff%22/><text x=%2290%22 y=%22115%22 font-size=%2280%22 text-anchor=%22middle%22>📖</text></svg>">
 <title>我的书架</title>
 <style>
@@ -24,6 +23,34 @@ body{
   min-height:100vh;
 }
 h1{text-align:center;margin-bottom:16px;font-size:22px;font-weight:700}
+
+/* 统计 */
+.stats{
+  display:flex;
+  background:#fff;
+  border-radius:12px;
+  padding:14px 0;
+  margin-bottom:12px;
+  box-shadow:0 1px 4px rgba(0,0,0,.06);
+}
+.stat{flex:1;text-align:center}
+.stat .num{font-size:24px;font-weight:700}
+.stat .label{font-size:13px;color:#888;margin-top:3px}
+.stat.all .num{color:#407bff}
+.stat.read .num{color:#27ae60}
+.stat.unread .num{color:#e67e22}
+.progress-wrap{
+  background:#fff;
+  border-radius:12px;
+  padding:12px 16px;
+  margin-bottom:14px;
+  box-shadow:0 1px 4px rgba(0,0,0,.06);
+}
+.progress-text{display:flex;justify-content:space-between;font-size:13px;color:#888;margin-bottom:8px}
+.progress-bar{height:8px;background:#e4e7ed;border-radius:4px;overflow:hidden}
+.progress-fill{height:100%;background:linear-gradient(90deg,#407bff,#27ae60);border-radius:4px;transition:width .3s ease}
+
+/* 搜索 */
 .search-box{margin-bottom:14px}
 #searchInput{
   width:100%;
@@ -35,6 +62,8 @@ h1{text-align:center;margin-bottom:16px;font-size:22px;font-weight:700}
   outline:none;
 }
 #searchInput:focus{border-color:#407bff}
+
+/* 全部/未读/已读 */
 .tabs{display:flex;gap:8px;margin-bottom:14px}
 .tab{
   flex:1;
@@ -47,7 +76,22 @@ h1{text-align:center;margin-bottom:16px;font-size:22px;font-weight:700}
   transition:all .2s;
 }
 .tab.active{background:#407bff;color:#fff;font-weight:500}
-.tag-filter-area{margin-bottom:14px;line-height:2}
+
+/* 分类栏 */
+.category-area{margin-bottom:14px}
+.cat-types{display:flex;gap:8px;margin-bottom:10px}
+.cat-type{
+  flex:1;
+  padding:9px 0;
+  border-radius:8px;
+  border:none;
+  background:#e4e7ed;
+  cursor:pointer;
+  font-size:14px;
+  transition:all .2s;
+}
+.cat-type.active{background:#407bff;color:#fff;font-weight:500}
+.cat-chips{line-height:2}
 .tag-chip{
   display:inline-block;
   padding:5px 12px;
@@ -58,16 +102,31 @@ h1{text-align:center;margin-bottom:16px;font-size:22px;font-weight:700}
   font-size:13px;
 }
 .tag-chip.active{background:#407bff;color:white}
-.add-area{
+
+/* 添加/批量 小按钮 */
+.add-toggle-row{display:flex;gap:10px;margin-bottom:14px}
+.add-toggle{
+  flex:1;
+  padding:12px;
+  background:#fff;
+  border:1px dashed #407bff;
+  border-radius:10px;
+  color:#407bff;
+  font-size:15px;
+  cursor:pointer;
+}
+
+/* 添加表单 / 批量区 */
+.card{
   background:#fff;
   padding:16px;
   border-radius:12px;
   margin-bottom:16px;
   box-shadow:0 1px 4px rgba(0,0,0,.06);
 }
-.add-area h3{margin-bottom:12px;font-size:17px}
+.card h3{margin-bottom:12px;font-size:17px}
 .input-row{display:flex;flex-direction:column;gap:10px}
-.add-area input{
+.card input{
   width:100%;
   padding:11px 12px;
   border:1px solid #ddd;
@@ -75,8 +134,8 @@ h1{text-align:center;margin-bottom:16px;font-size:22px;font-weight:700}
   font-size:16px;
   outline:none;
 }
-.add-area input:focus{border-color:#407bff}
-#addBtn{
+input:focus{border-color:#407bff}
+.primary-btn{
   padding:12px;
   background:#27ae60;
   color:#fff;
@@ -86,55 +145,97 @@ h1{text-align:center;margin-bottom:16px;font-size:22px;font-weight:700}
   font-size:16px;
   font-weight:500;
 }
+#batchInput{
+  width:100%;
+  height:120px;
+  padding:10px;
+  border:1px solid #ddd;
+  border-radius:8px;
+  font-size:14px;
+  outline:none;
+  resize:vertical;
+  margin-bottom:10px;
+}
+.batch-tip{
+  font-size:13px;
+  color:#888;
+  margin-bottom:10px;
+  line-height:1.6;
+}
+
+/* 书籍四列网格 */
 .book-list{
-  background:#fff;
-  padding:8px 16px;
-  border-radius:12px;
-  min-height:200px;
-  box-shadow:0 1px 4px rgba(0,0,0,.06);
+  display:grid;
+  grid-template-columns:repeat(4, 1fr);
+  gap:8px;
 }
 .book-item{
-  padding:14px 0;
-  border-bottom:1px solid #f0f0f0;
-}
-.book-item:last-child{border-bottom:none}
-.book-info{line-height:1.5}
-.book-name{font-weight:600;font-size:16px}
-.book-author{color:#666;font-size:14px;margin-top:2px}
-.book-tags{margin-top:6px}
-.book-tag{
-  display:inline-block;
-  background:#f0f4ff;
-  color:#407bff;
-  padding:3px 8px;
-  border-radius:8px;
-  font-size:12px;
-  margin-right:4px;
-}
-.btns{
+  background:#fff;
+  border-radius:10px;
+  padding:12px 6px;
+  box-shadow:0 1px 4px rgba(0,0,0,.06);
+  text-align:center;
   display:flex;
-  gap:8px;
-  margin-top:10px;
+  flex-direction:column;
 }
+.book-name{font-weight:600;font-size:13px;line-height:1.35;word-break:break-word;flex:1}
+.btns{display:flex;gap:5px;margin-top:10px}
 .btns button{
   flex:1;
-  padding:8px;
-  font-size:14px;
+  padding:5px 0;
+  font-size:11px;
   border-radius:6px;
   border:none;
   cursor:pointer;
 }
+.zoom-row{display:flex;align-items:center;justify-content:flex-end;gap:8px;margin-bottom:10px}
+.zoom-btn{
+  padding:6px 12px;background:#fff;border:1px solid #ddd;border-radius:8px;
+  color:#407bff;font-size:13px;cursor:pointer;
+}
+.zoom-info{font-size:13px;color:#888;min-width:48px;text-align:center}
 .btn-read{background:#e8f0ff;color:#407bff}
 .btn-read.read{background:#fff0e8;color:#e67e22}
 .btn-del{background:#ffeaea;color:#e74c3c}
-.empty{color:#999;text-align:center;padding:40px 0;font-size:15px}
+.btn-review{background:#f0f0f0;color:#555}
+.book-date{color:#e67e22;font-size:10px;margin-top:4px;line-height:1.3}
+
+/* 书评/读完时间 弹窗 */
+.modal-mask{position:fixed;inset:0;background:rgba(0,0,0,.4);display:none;align-items:center;justify-content:center;padding:20px;z-index:99}
+.modal-mask.show{display:flex}
+.modal{background:#fff;border-radius:14px;padding:20px;width:100%;max-width:360px}
+.modal h3{font-size:16px;margin-bottom:6px;word-break:break-word}
+.modal-label{display:block;font-size:13px;color:#888;margin:12px 0 6px}
+.modal input[type=date],.modal textarea{
+  width:100%;padding:10px;border:1px solid #ddd;border-radius:8px;font-size:15px;outline:none;box-sizing:border-box;
+}
+.modal textarea{height:120px;resize:vertical;margin-bottom:14px}
+.modal-btns{display:flex;gap:10px}
+.modal-btns button{flex:1;padding:11px;border:none;border-radius:8px;font-size:15px;cursor:pointer}
+.modal-cancel{background:#eee;color:#666}
+.modal-save{background:#27ae60;color:#fff}
+.empty{
+  color:#999;text-align:center;padding:40px 0;font-size:15px;
+  background:#fff;border-radius:12px;grid-column:1/-1;
+  box-shadow:0 1px 4px rgba(0,0,0,.06);
+}
 </style>
 </head>
 <body>
 <h1>📖 我的书架</h1>
 
+<div class="stats">
+  <div class="stat all"><div class="num" id="statTotal">0</div><div class="label">全部书籍</div></div>
+  <div class="stat read"><div class="num" id="statRead">0</div><div class="label">已读</div></div>
+  <div class="stat unread"><div class="num" id="statUnread">0</div><div class="label">未读</div></div>
+</div>
+<div class="progress-wrap">
+  <div class="progress-text"><span id="progressLabel">阅读进度 0%</span><span id="progressCount">0 / 0 本</span></div>
+  <div class="progress-bar"><div class="progress-fill" id="progressFill" style="width:0%"></div></div>
+</div>
+
 <div class="search-box">
-<input type="text" id="searchInput" placeholder="🔍 搜索书名 / 作者 / 标签" oninput="render()">
+<input type="text" id="searchInput" placeholder="🔍 搜索书名 / 作者 / 译者 / 出版社" oninput="render()">
 </div>
 
 <div class="tabs">
@@ -143,53 +244,147 @@ h1{text-align:center;margin-bottom:16px;font-size:22px;font-weight:700}
 <button class="tab" data-type="read" onclick="switchTab('read')">已读</button>
 </div>
 
-<div class="tag-filter-area" id="tagFilterArea"></div>
+<div class="add-toggle-row">
+  <button class="add-toggle" id="addToggleBtn" onclick="toggleAdd()">➕ 添加新书 ▼</button>
+  <button class="add-toggle" id="batchToggleBtn" onclick="toggleBatch()">📥 批量导入 ▼</button>
+</div>
 
-<div class="add-area">
+<div class="card" id="addArea" style="display:none">
 <h3>➕ 添加新书</h3>
 <div class="input-row">
 <input id="bookName" placeholder="书名（必填）">
 <input id="bookAuthor" placeholder="作者">
-<input id="bookTags" placeholder="标签，逗号分隔，例：文学,小说">
-<button id="addBtn" onclick="addBook()">添加到书架</button>
+<input id="bookTranslator" placeholder="译者">
+<input id="bookPublisher" placeholder="出版社">
+<button class="primary-btn" onclick="addBook()">添加到书架</button>
 </div>
+</div>
+
+<div class="card" id="batchArea" style="display:none">
+<div class="batch-tip">
+  每行一本书，格式：<b>书名,作者,译者,出版社</b><br>
+  例子（缺项可留空）：<br>
+  红楼梦,曹雪芹,,人民文学出版社<br>
+  三体,刘慈欣,,重庆出版社<br>
+  百年孤独,加西亚·马尔克斯,范晔,南海出版公司
+</div>
+<textarea id="batchInput" placeholder="在这里粘贴你的书单..."></textarea>
+<button class="primary-btn" style="background:#407bff" onclick="batchImport()">一键导入全部</button>
+</div>
+
+<div class="zoom-row">
+  <button class="zoom-btn" onclick="zoomOut()">− 缩小</button>
+  <span class="zoom-info" id="zoomInfo">4 列</span>
+  <button class="zoom-btn" onclick="zoomIn()">放大 +</button>
 </div>
 
 <div class="book-list" id="bookList"></div>
 
+<div class="modal-mask" id="modalMask" onclick="if(event.target===this)closeEditor()">
+  <div class="modal">
+    <h3 id="modalTitle">📝 阅读记录</h3>
+    <label class="modal-label">读完时间</label>
+    <input type="date" id="editDate">
+    <label class="modal-label">阅读感受 / 书评</label>
+    <textarea id="editReview" placeholder="记录一下这本书的阅读感受..."></textarea>
+    <div class="modal-btns">
+      <button class="modal-cancel" onclick="closeEditor()">取消</button>
+      <button class="modal-save" onclick="saveEditor()">保存</button>
+    </div>
+  </div>
+</div>
+
 <script>
 let books = JSON.parse(localStorage.getItem("myBookshelf")) || [];
+// 兼容旧数据：统一为新结构（作者/译者/出版社），丢弃旧 tags
+books = books.map(b => ({
+    id: b.id,
+    name: b.name,
+    author: b.author || "",
+    translator: b.translator || "",
+    publisher: b.publisher || "",
+    isRead: !!b.isRead,
+    finishDate: b.finishDate || "",
+    review: b.review || ""
+}));
+
 let currentTab = "all";
-let selectedTag = null;
+let cols = parseInt(localStorage.getItem("bookshelfCols")) || 4;
+
+function applyCols(){
+    document.getElementById("bookList").style.gridTemplateColumns = "repeat(" + cols + ",1fr)";
+    document.getElementById("zoomInfo").textContent = cols + " 列";
+}
+function zoomIn(){ // 放大：书变大 → 列数减少（最多到 1 列）
+    if(cols > 1){ cols--; localStorage.setItem("bookshelfCols", cols); applyCols(); }
+}
+function zoomOut(){ // 缩小：书变小 → 列数增加（最多到 5 列）
+    if(cols < 5){ cols++; localStorage.setItem("bookshelfCols", cols); applyCols(); }
+}
+
+function saveData(){
+    localStorage.setItem("myBookshelf", JSON.stringify(books));
+}
 
 function switchTab(type){
     currentTab = type;
     document.querySelectorAll(".tab").forEach(t=>{
-        t.classList.remove("active");
-        if(t.dataset.type === type) t.classList.add("active");
-    })
+        t.classList.toggle("active", t.dataset.type === type);
+    });
     render();
+}
+
+function toggleAdd(){
+    const area = document.getElementById("addArea");
+    const open = area.style.display !== "block";
+    area.style.display = open ? "block" : "none";
+    document.getElementById("addToggleBtn").textContent = open ? "➕ 添加新书 ▲" : "➕ 添加新书 ▼";
+    if(open) document.getElementById("bookName").focus();
+}
+
+function toggleBatch(){
+    const area = document.getElementById("batchArea");
+    const open = area.style.display !== "block";
+    area.style.display = open ? "block" : "none";
+    document.getElementById("batchToggleBtn").textContent = open ? "📥 批量导入 ▲" : "📥 批量导入 ▼";
 }
 
 function addBook(){
     const name = document.getElementById("bookName").value.trim();
     const author = document.getElementById("bookAuthor").value.trim();
-    const tagStr = document.getElementById("bookTags").value.trim();
-    if(!name){
-        alert("书名不能为空");
-        return;
-    }
-    const tags = tagStr.split(',').map(t=>t.trim()).filter(t=>t);
-    books.push({id:Date.now(), name, author, tags, isRead:false});
+    const translator = document.getElementById("bookTranslator").value.trim();
+    const publisher = document.getElementById("bookPublisher").value.trim();
+    if(!name){ alert("书名不能为空"); return; }
+    books.push({id:Date.now(), name, author, translator, publisher, isRead:false});
     saveData();
     document.getElementById("bookName").value = "";
     document.getElementById("bookAuthor").value = "";
-    document.getElementById("bookTags").value = "";
+    document.getElementById("bookTranslator").value = "";
+    document.getElementById("bookPublisher").value = "";
     render();
 }
 
-function saveData(){
-    localStorage.setItem("myBookshelf", JSON.stringify(books));
+function batchImport(){
+    const text = document.getElementById("batchInput").value.trim();
+    if(!text){ alert("请先粘贴书单"); return; }
+    const lines = text.split('\n').map(l=>l.trim()).filter(l=>l);
+    let count = 0;
+    lines.forEach(line=>{
+        const parts = line.split(/[,，]/).map(p=>p.trim());
+        const name = parts[0];
+        if(!name) return;
+        const author = parts[1] || "";
+        const translator = parts[2] || "";
+        const publisher = parts[3] || "";
+        books.push({id:Date.now()+count, name, author, translator, publisher, isRead:false});
+        count++;
+    });
+    saveData();
+    document.getElementById("batchInput").value = "";
+    document.getElementById("batchArea").style.display = "none";
+    document.getElementById("batchToggleBtn").textContent = "📥 批量导入 ▼";
+    alert("成功导入 " + count + " 本书！");
+    render();
 }
 
 function toggleRead(id){
@@ -209,15 +404,49 @@ function delBook(id){
     }
 }
 
-function getAllTags(){
-    const s = new Set();
-    books.forEach(b=>b.tags.forEach(t=>s.add(t)));
-    return [...s];
+let editingId = null;
+function todayStr(){
+    const d = new Date();
+    return d.getFullYear() + "-" + String(d.getMonth()+1).padStart(2,"0") + "-" + String(d.getDate()).padStart(2,"0");
+}
+function openEditor(id){
+    const book = books.find(b=>b.id === id);
+    if(!book) return;
+    editingId = id;
+    document.getElementById("modalTitle").textContent = "📝 《" + book.name + "》";
+    document.getElementById("editDate").value = book.finishDate || (book.isRead ? "" : todayStr());
+    document.getElementById("editReview").value = book.review || "";
+    document.getElementById("modalMask").classList.add("show");
+}
+function closeEditor(){
+    editingId = null;
+    document.getElementById("modalMask").classList.remove("show");
+}
+function saveEditor(){
+    const book = books.find(b=>b.id === editingId);
+    if(book){
+        const d = document.getElementById("editDate").value;
+        const r = document.getElementById("editReview").value.trim();
+        book.finishDate = d;
+        book.review = r;
+        book.isRead = !!d; // 设了读完时间即视为已读；清空则回到未读
+        saveData();
+        render();
+    }
+    closeEditor();
 }
 
-function selectTag(tag){
-    selectedTag = (selectedTag === tag) ? null : tag;
-    render();
+function updateStats(){
+    const total = books.length;
+    const read = books.filter(b=>b.isRead).length;
+    const unread = total - read;
+    document.getElementById("statTotal").textContent = total;
+    document.getElementById("statRead").textContent = read;
+    document.getElementById("statUnread").textContent = unread;
+    const pct = total ? Math.round(read / total * 100) : 0;
+    document.getElementById("progressFill").style.width = pct + "%";
+    document.getElementById("progressLabel").textContent = "阅读进度 " + pct + "%";
+    document.getElementById("progressCount").textContent = read + " / " + total + " 本";
 }
 
 function render(){
@@ -228,47 +457,42 @@ function render(){
         list = list.filter(b=>
             b.name.toLowerCase().includes(keyword) ||
             b.author.toLowerCase().includes(keyword) ||
-            b.tags.some(t=>t.toLowerCase().includes(keyword))
+            b.translator.toLowerCase().includes(keyword) ||
+            b.publisher.toLowerCase().includes(keyword)
         );
     }
     if(currentTab === "unread") list = list.filter(b=>!b.isRead);
-    if(currentTab === "read") list = list.filter(b=>b.isRead);
-    if(selectedTag) list = list.filter(b=>b.tags.includes(selectedTag));
-
-    const allTags = getAllTags();
-    let tagHtml = "";
-    tagHtml += `<span class="tag-chip ${selectedTag===null?'active':''}" onclick="selectTag(null)">全部标签</span>`;
-    allTags.forEach(tag=>{
-        tagHtml += `<span class="tag-chip ${selectedTag===tag?'active':''}" onclick="selectTag('${tag}')">${tag}</span>`;
-    })
-    document.getElementById("tagFilterArea").innerHTML = tagHtml;
+    if(currentTab === "read"){
+        list = list.filter(b=>b.isRead);
+        list.sort((a,b)=> (b.finishDate||"").localeCompare(a.finishDate||"")); // 最近读完的排在前面
+    }
 
     const container = document.getElementById("bookList");
     if(list.length === 0){
-        container.innerHTML = `<div class="empty">书架空空如也，添加第一本书吧</div>`;
+        container.innerHTML = `<div class="empty">书架空空如也，点上方「添加新书」开始吧</div>`;
+        updateStats();
         return;
     }
 
     let html = "";
     list.forEach(book=>{
-        let tags = "";
-        book.tags.forEach(t=>{ tags += `<span class="book-tag">${t}</span>`; })
+        const dateHtml = book.finishDate ? `<div class="book-date">📅 ${book.finishDate}</div>` : "";
         html += `
         <div class="book-item">
-            <div class="book-info">
-                <div class="book-name">${book.name}</div>
-                <div class="book-author">作者：${book.author || "未填写"}</div>
-                <div class="book-tags">${tags}</div>
-            </div>
+            <div class="book-name">${book.name}</div>
+            ${dateHtml}
             <div class="btns">
-                <button class="btn-read ${book.isRead?'read':''}" onclick="toggleRead(${book.id})">${book.isRead ? "✓ 已读 · 点设未读" : "标记为已读"}</button>
+                <button class="btn-read ${book.isRead?'read':''}" onclick="openEditor(${book.id})">${book.isRead ? "✓已读" : "已读"}</button>
                 <button class="btn-del" onclick="delBook(${book.id})">删除</button>
+                <button class="btn-review" onclick="openEditor(${book.id})">${book.review ? "评✓" : "书评"}</button>
             </div>
         </div>`;
-    })
+    });
     container.innerHTML = html;
+    updateStats();
 }
 
+applyCols();
 render();
 </script>
 </body>
